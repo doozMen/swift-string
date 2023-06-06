@@ -4,23 +4,7 @@ extension String {
 
   public func indentNonEmpty(_ kind: IndentKind) -> String {
     let lines = split(separator: "\n")
-    let indentedLines = lines
-      .map { !$0.isEmpty ? "\(kind.indentation)\($0)" : $0 }
-    return indentedLines.joined(separator: "\n")
-  }
-
-  public enum IndentKind {
-    case tabs(Int)
-    case spaces(Int, tabs: Int)
-
-    var indentation: String {
-      switch self {
-        case .spaces(let spaces, tabs: let tabs):
-          return String(repeating: String(repeating: " ", count: spaces), count: tabs)
-        case .tabs(let tabs):
-          return String(repeating: "\t", count: tabs)
-      }
-    }
+    return lines.indentNonEmpty(kind)
   }
 
   public var utf8: Data {
@@ -84,9 +68,7 @@ extension String {
 
 extension String {
   public func trimmingLines() -> String {
-    return
-    self
-      .split(separator: "\n", omittingEmptySubsequences: false)
+    split(separator: "\n", omittingEmptySubsequences: false)
       .map { $0.trimmed() }
       .joined(separator: "\n")
   }
@@ -98,5 +80,33 @@ extension Substring {
       return ""
     }
     return self[...i]
+  }
+}
+
+public enum IndentKind {
+  case tabs(Int)
+  case spaces(Int, tabs: Int)
+
+  var indentation: String {
+    switch self {
+      case .spaces(let spaces, tabs: let tabs):
+        return String(repeating: String(repeating: " ", count: spaces), count: tabs)
+      case .tabs(let tabs):
+        return String(repeating: "\t", count: tabs)
+    }
+  }
+}
+
+extension Array where Element == Substring {
+  public func indentNonEmpty(_ kind: IndentKind) -> String {
+    let indentedLines = map { !$0.isEmpty ? "\(kind.indentation)\($0)" : $0 }
+    return indentedLines.joined(separator: "\n")
+  }
+}
+
+extension Array where Element == String {
+  public func indentNonEmpty(_ kind: IndentKind) -> String {
+    let indentedLines = map { !$0.isEmpty ? "\(kind.indentation)\($0)" : $0 }
+    return indentedLines.joined(separator: "\n")
   }
 }
