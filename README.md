@@ -1,3 +1,3 @@
 # swift-string
 
-A description of this package.
+Common string extensions.
