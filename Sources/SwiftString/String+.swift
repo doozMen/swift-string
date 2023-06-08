@@ -10,14 +10,14 @@ extension String {
   public var utf8: Data {
     get throws {
       guard let data = data(using: .utf8) else {
-        throw Error.invalidUtf8Data
+        throw Error.invalidUtf8Data()
       }
       return data
     }
   }
 
   public enum Error: Swift.Error {
-    case invalidUtf8Data
+    case invalidUtf8Data(file: String = #fileID, function: String = #function, line: UInt = #line)
   }
 
   public func capitalizingFirstLetter() -> String {
