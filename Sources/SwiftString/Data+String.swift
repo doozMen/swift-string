@@ -1,7 +1,7 @@
 import Foundation
 
 
-public extension Data {
+extension Data {
   public var utf8String: String {
     get throws {
       guard let string = String(data: self, encoding: .utf8) else {
