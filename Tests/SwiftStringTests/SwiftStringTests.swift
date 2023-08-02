@@ -1,7 +1,9 @@
 import XCTest
+import SnapshotTesting
+
 @testable import SwiftString
 
-final class StringTests: XCTestCase {
+final class StringTests: XCTestCaseSnapshot {
 
   func testIndent() {
     let sut = """
@@ -13,14 +15,7 @@ final class StringTests: XCTestCase {
 
     """
 
-    let expected = """
-          // Should
-              Not
-                  move
-          // Ok
-    """
-
-    XCTAssertEqual(sut.indentNonEmpty(.spaces(2, tabs: 3)), expected)
+    assertSnapshot(matching: sut.indentNonEmpty(.spaces(2, tabs: 3)), as: .lines)
   }
 
   func testCamelcase() {
@@ -45,4 +40,13 @@ final class StringTests: XCTestCase {
     XCTAssertEqual("whatDoesItDo".lowercasedFirstCharacter(), "whatDoesItDo")
   }
 
+}
+
+open class XCTestCaseSnapshot: XCTestCase {
+  open override class func setUp() {
+    super.setUp()
+    SnapshotTesting.diffTool = "ksdiff"
+    let isRecording = Bool(ProcessInfo.processInfo.environment["be.dooz.update.tests"] ?? "false") ?? false
+    SnapshotTesting.isRecording = isRecording
+  }
 }

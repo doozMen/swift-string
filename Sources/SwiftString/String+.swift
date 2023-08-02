@@ -2,8 +2,8 @@ import Foundation
 
 extension String {
 
-  public func indentNonEmpty(_ kind: IndentKind) -> String {
-    let lines = split(separator: "\n")
+  public func indentNonEmpty(_ kind: IndentKind, omittingEmptySubsequences: Bool = false) -> String {
+    let lines = split(separator: "\n", omittingEmptySubsequences: omittingEmptySubsequences)
     return lines.indentNonEmpty(kind)
   }
 
