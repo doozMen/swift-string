@@ -19,7 +19,11 @@ final class StringTests: XCTestCaseSnapshot {
   }
 
   func testCamelcase() {
-    XCTAssertEqual("what-does-it-do".camelCase(), "whatDoesItDo")
+    let expected = "whatDoesItDo"
+    XCTAssertEqual("what.does.it.do".camelCase(), expected)
+    XCTAssertEqual("what-does-it-do".camelCase(), expected)
+    XCTAssertEqual("what_does_it_do".camelCase(), expected)
+    XCTAssertEqual(expected.camelCase(), expected)
   }
 
   func testSnakeCase() {
