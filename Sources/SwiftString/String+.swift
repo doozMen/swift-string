@@ -52,7 +52,7 @@ extension String {
   public func camelCase() -> String {
     let words = self.components(separatedBy: CharacterSet(charactersIn: "-_."))
     let firstWord = words.first ?? ""
-    let capitalizedWords = words.dropFirst().map { $0.capitalized }
+    let capitalizedWords = words.dropFirst().map { $0.capitalizingFirstLetter() }
     let camelCaseString = [firstWord] + capitalizedWords
     return camelCaseString.joined()
   }
