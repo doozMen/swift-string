@@ -23,8 +23,10 @@ final class StringTests: XCTestCaseSnapshot {
     XCTAssertEqual("what.does.it.do".camelCase(), expected)
     XCTAssertEqual("what-does-it-do".camelCase(), expected)
     XCTAssertEqual("what_does_it_do".camelCase(), expected)
+    XCTAssertEqual("what Does it do".camelCase(), expected)
     XCTAssertEqual(expected.camelCase(), expected)
   }
+  
   
   func testCamelCaseMixed() {
     let sut = "semantic.foreground.onBrand.static.default.fill"
