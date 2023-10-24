@@ -37,16 +37,17 @@ extension String {
     return result
   }
 
-  public func camelCase(to kind: KebabSnake) -> String {
+  public func camelCase(to kind: Transform) -> String {
     let acronymPattern = "([A-Z]+)([A-Z][a-z]|[0-9])"
     let normalPattern = "([a-z0-9])([A-Z])"
     return processCamelCaseRegex(pattern: acronymPattern, separator: kind.rawValue)?
       .processCamelCaseRegex(pattern: normalPattern, separator: kind.rawValue)?.lowercased() ?? lowercased()
   }
 
-  public enum KebabSnake: String {
+  public enum Transform: String {
     case kebab = "-"
     case snake = "_"
+    case dots = "."
   }
 
   public func camelCase() -> String {

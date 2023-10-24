@@ -36,6 +36,8 @@ final class StringTests: XCTestCaseSnapshot {
 
   func testSnakeCase() {
     XCTAssertEqual("whatDoesItDo".camelCase(to: .kebab), "what-does-it-do" )
+    XCTAssertEqual("whatDoesItDo".camelCase(to: .snake), "what_does_it_do" )
+    XCTAssertEqual("whatDoesItDo".camelCase(to: .dots), "what.does.it.do" )
   }
 
   func testCapitalizeFirstLetter() {
