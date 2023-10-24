@@ -38,8 +38,8 @@ extension String {
   }
 
   public func camelCase(to kind: Transform) -> String {
-    let acronymPattern = "([A-Z]+)([A-Z][a-z]|[0-9])"
-    let normalPattern = "([a-z0-9])([A-Z])"
+    let acronymPattern = "([A-Z]+)([A-Z][a-z0-9]|[0-9])"
+    let normalPattern = "([a-z0-9])([A-Z]|[0-9])"
     return processCamelCaseRegex(pattern: acronymPattern, separator: kind.rawValue)?
       .processCamelCaseRegex(pattern: normalPattern, separator: kind.rawValue)?.lowercased() ?? lowercased()
   }
