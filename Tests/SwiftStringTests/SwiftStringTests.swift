@@ -1,10 +1,21 @@
 import XCTest
 import SnapshotTesting
+import RegexBuilder
 
 @testable import SwiftString
 
 final class StringTests: XCTestCaseSnapshot {
-
+  
+  func testCapitalOrNumberAsSeparator() {
+    XCTAssertEqual(
+      "word1Word2Word3-1234-word4Word5".wordsInCamelCaseOrOneOfTheTransformSeparators(),
+      ["word1", "Word2", "Word3", "1234", "word4", "Word5"])
+    
+    XCTAssertEqual(
+      "whatDoes-690_ItDo".wordsInCamelCaseOrOneOfTheTransformSeparators(),
+      ["what", "Does", "690", "It", "Do"])
+  }
+  
   func testIndent() {
     let sut = """
     // Should
@@ -37,7 +48,7 @@ final class StringTests: XCTestCaseSnapshot {
   func testSnakeCase() {
     XCTAssertEqual("whatDoesItDo".camelCase(to: .kebab), "what-does-it-do" )
     XCTAssertEqual("whatDoesItDo".camelCase(to: .snake), "what_does_it_do" )
-    XCTAssertEqual("whatDoes69ItDo".camelCase(to: .snake), "what_does_69_it_do" )
+    XCTAssertEqual("whatDoes-690_ItDo".camelCase(to: .snake), "what_does_690_it_do" )
     XCTAssertEqual("whatDoesItDo".camelCase(to: .dots), "what.does.it.do" )
   }
 

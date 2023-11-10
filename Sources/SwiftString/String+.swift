@@ -1,4 +1,5 @@
 import Foundation
+import RegexBuilder
 
 extension String {
 
@@ -36,34 +37,69 @@ extension String {
 
     return result
   }
-
-  public func camelCase(to kind: Transform) -> String {
-    let acronymPattern = "([A-Z]+)([A-Z][a-z0-9]|[0-9])"
-    let normalPattern = "([a-z0-9])([A-Z]|[0-9])"
-    return processCamelCaseRegex(pattern: acronymPattern, separator: kind.rawValue)?
-      .processCamelCaseRegex(pattern: normalPattern, separator: kind.rawValue)?.lowercased() ?? lowercased()
+  
+  public func wordsInCamelCaseOrOneOfTheTransformSeparators() -> [String] {
+    let separator =  Regex {
+      ChoiceOf{
+        One(Transform.kebab.rawValue)
+        One(Transform.snake.rawValue)
+        One(Transform.dots.rawValue)
+      }
+    }
+    
+    let wordsRegex = Regex {
+      ChoiceOf{
+        One(("A"..."Z"))
+        One(("a"..."z"))
+        separator
+      }
+      ZeroOrMore {
+        ChoiceOf {
+          OneOrMore(("a"..."z"))
+          OneOrMore(.digit)
+        }
+      }
+    }
+    
+    let words = self
+      .matches(of: wordsRegex)
+      .map {
+        $0.description
+          .replacingOccurrences(of: Transform.kebab.rawValue, with: "")
+          .replacingOccurrences(of: Transform.snake.rawValue, with: "")
+          .replacingOccurrences(of: Transform.dots.rawValue, with: "")
+      }
+    return words.filter { !$0.isEmpty }
   }
 
-  public enum Transform: String {
+  public func camelCase(to kind: Transform) -> String {
+    let words = wordsInCamelCaseOrOneOfTheTransformSeparators()
+    guard let start = words.first else {
+      return ""
+    }
+    return words
+      .dropFirst()
+      .reduce(start) { partialResult, word in
+        "\(partialResult)\(kind.rawValue)\(word.lowercased())"
+      }
+  }
+
+  public enum Transform: String, CaseIterable {
     case kebab = "-"
     case snake = "_"
     case dots = "."
   }
 
   public func camelCase() -> String {
-    let words = self.components(separatedBy: CharacterSet(charactersIn: "-_. "))
-    let firstWord = words.first ?? ""
-    let capitalizedWords = words.dropFirst().map { $0.capitalizingFirstLetter() }
-    let camelCaseString = [firstWord] + capitalizedWords
-    return camelCaseString.joined()
-  }
-
-  // MARK: Private
-
-  private func processCamelCaseRegex(pattern: String, separator: String) -> String? {
-    let regex = try? NSRegularExpression(pattern: pattern, options: [])
-    let range = NSRange(location: 0, length: count)
-    return regex?.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "$1\(separator)$2")
+    let words = wordsInCamelCaseOrOneOfTheTransformSeparators()
+    guard let start = words.first?.lowercasedFirstCharacter() else {
+      return ""
+    }
+    return words
+      .dropFirst()
+      .reduce(start) { partialResult, word in
+      "\(partialResult)\(word.capitalizingFirstLetter())"
+    }
   }
 }
 
@@ -110,4 +146,23 @@ extension Array where Element == String {
     let indentedLines = map { !$0.isEmpty ? "\(kind.indentation)\($0)" : $0 }
     return indentedLines.joined(separator: "\n")
   }
+}
+
+func toCamelCase(inputString: String) -> String {
+  let pattern = Regex {
+      ZeroOrMore {
+        Capture {
+          ChoiceOf {
+            ("a"..."z")
+            ("A"..."Z")
+            OneOrMore(.digit)   // Matches a sequence of digits (whole number)
+          }
+        }
+      }
+  }
+
+  let matches = inputString.matches(of: pattern).map { $0.output.0 }
+  let firstWord = matches.first ?? ""
+  return ([String(firstWord)]
+          + matches.dropFirst().map { $0.description.capitalizingFirstLetter() }).joined()
 }
