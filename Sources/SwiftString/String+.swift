@@ -74,7 +74,7 @@ extension String {
 
   public func camelCase(to kind: Transform) -> String {
     let words = wordsInCamelCaseOrOneOfTheTransformSeparators()
-    guard let start = words.first else {
+    guard let start = words.first?.lowercased() else {
       return ""
     }
     return words
