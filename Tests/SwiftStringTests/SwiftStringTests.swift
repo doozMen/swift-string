@@ -6,10 +6,20 @@ import RegexBuilder
 
 final class StringTests: XCTestCaseSnapshot {
   
+  func testSplitWordsLetters() {
+    XCTAssertEqual(
+      "plus26".splitWordsDigits(),
+      ["plus", "26"])
+    
+    XCTAssertEqual(
+      "plus".splitWordsDigits(),
+      ["plus"])
+  }
+  
   func testCapitalOrNumberAsSeparator() {
     XCTAssertEqual(
       "word1Word2Word3-1234-word4Word5".wordsInCamelCaseOrOneOfTheTransformSeparators(),
-      ["word1", "Word2", "Word3", "1234", "word4", "Word5"])
+      ["word", "1", "Word", "2", "Word", "3", "1234", "word", "4", "Word", "5"])
     
     XCTAssertEqual(
       "whatDoes-690_ItDo".wordsInCamelCaseOrOneOfTheTransformSeparators(),
@@ -17,6 +27,10 @@ final class StringTests: XCTestCaseSnapshot {
     XCTAssertEqual(
       "gradient.neutral.100-bottom-to-50%".wordsInCamelCaseOrOneOfTheTransformSeparators(),
       ["gradient", "neutral", "100", "bottom", "to", "50"])
+    
+    XCTAssertEqual(
+      "plus26Logo".wordsInCamelCaseOrOneOfTheTransformSeparators(),
+      ["plus", "26", "Logo"])
   }
   
   func testIndent() {
@@ -55,6 +69,7 @@ final class StringTests: XCTestCaseSnapshot {
     XCTAssertEqual("whatDoes-690_ItDo".camelCase(to: .snake), "what_does_690_it_do" )
     XCTAssertEqual("gradient.neutral.100-bottom-to-50%".camelCase(to: .snake), "gradient_neutral_100_bottom_to_50" )
     XCTAssertEqual("whatDoesItDo".camelCase(to: .dots), "what.does.it.do" )
+    XCTAssertEqual("plus26Logo".camelCase(to: .dots), "plus.26.logo" )
   }
 
   func testCapitalizeFirstLetter() {

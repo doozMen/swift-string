@@ -38,6 +38,23 @@ extension String {
     return result
   }
   
+  public func splitWordsDigits() -> [String] {
+    let splitWordDigits = Regex {
+      ChoiceOf {
+        ChoiceOf{
+          OneOrMore("a"..."z")
+          OneOrMore("A"..."z")
+        }
+        OneOrMore(.digit)
+      }
+    }
+    return self
+      .matches(of: splitWordDigits)
+      .map {
+        $0.description
+      }
+  }
+  
   public func wordsInCamelCaseOrOneOfTheTransformSeparators() -> [String] {
     let separator =  Regex {
       ChoiceOf{
@@ -46,7 +63,6 @@ extension String {
         One(Transform.dots.rawValue)
       }
     }
-    
     let wordsRegex = Regex {
       ChoiceOf{
         One(("A"..."Z"))
@@ -61,6 +77,9 @@ extension String {
       }
     }
     
+    
+
+    
     let words = self
       .matches(of: wordsRegex)
       .map {
@@ -69,6 +88,7 @@ extension String {
           .replacingOccurrences(of: Transform.snake.rawValue, with: "")
           .replacingOccurrences(of: Transform.dots.rawValue, with: "")
       }
+      .flatMap { $0.splitWordsDigits() }
     return words.filter { !$0.isEmpty }
   }
 
