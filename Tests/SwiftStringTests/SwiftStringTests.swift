@@ -65,6 +65,8 @@ final class StringTests: XCTestCaseSnapshot {
   func testSnakeCase() {
     XCTAssertEqual("WhatDoesItDo".camelCase(to: .kebab), "what-does-it-do" )
     XCTAssertEqual("whatDoesItDo".camelCase(to: .kebab), "what-does-it-do" )
+
+    XCTAssertEqual("whatDoesItDo".camelCase(to: .kebab), "what-does-it-do" )
     XCTAssertEqual("whatDoesItDo".camelCase(to: .snake), "what_does_it_do" )
     XCTAssertEqual("whatDoes-690_ItDo".camelCase(to: .snake), "what_does_690_it_do" )
     XCTAssertEqual("gradient.neutral.100-bottom-to-50%".camelCase(to: .snake), "gradient_neutral_100_bottom_to_50" )

@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "swift-string",
-    platforms: [.macOS(.v13), .iOS(.v16)],
+    platforms: [.macOS(.v13), .iOS(.v13)],
     products: [
         .library(
             name: "SwiftString",
