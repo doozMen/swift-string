@@ -120,23 +120,33 @@ extension String {
     }
   }
   
-  
-  public func camelCase(to kind: Transform) -> String {
-    let words = wordsInCamelCaseOrOneOfTheTransformSeparators()
-    guard let start = words.first?.lowercased() else {
-      return ""
-    }
-    return words
-      .dropFirst()
-      .reduce(start) { partialResult, word in
-        "\(partialResult)\(kind.rawValue)\(word.lowercased())"
+  public func split(to kind: Transform) -> String {
+    switch kind {
+    case .kebab, .snake, .dots:
+      let words = wordsInCamelCaseOrOneOfTheTransformSeparators()
+      guard let start = words.first?.lowercased() else {
+        return ""
       }
+      return words
+        .dropFirst()
+        .reduce(start) { partialResult, word in
+          "\(partialResult)\(kind.rawValue)\(word.lowercased())"
+        }
+    case .camelCase:
+      return self.camelCase()
+    }
+  }
+  
+  @available(*, deprecated, renamed: "split(to:)", message: "As it splits from anything rather then from camelcase the name did not apply anymore")
+  public func camelCase(to kind: Transform) -> String {
+    split(to: kind)
   }
   
   public enum Transform: String, CaseIterable {
     case kebab = "-"
     case snake = "_"
     case dots = "."
+    case camelCase = ""
   }
   
   public func camelCase() -> String {
