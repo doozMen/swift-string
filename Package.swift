@@ -12,7 +12,7 @@ let package = Package(
             targets: ["SwiftString"]),
     ],
     dependencies: [
-      .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.10.0"),
+      .package(url: "https://github.com/doozMen/swift-snapshot-testing-cli.git", from: "1.0.1"),
     ],
     targets: [
         .target(
@@ -22,9 +22,8 @@ let package = Package(
             name: "SwiftStringTests",
             dependencies: [
               "SwiftString",
-              .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
-            ],
-            exclude: ["__Snapshots__"]
+              .product(name: "SnapshotTestingCli", package: "swift-snapshot-testing-cli")
+            ]
         ),
     ]
 )

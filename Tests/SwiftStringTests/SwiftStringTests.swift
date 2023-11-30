@@ -1,5 +1,6 @@
 import XCTest
-import SnapshotTesting
+import SnapshotTestingCli
+import InlineSnapshotTesting
 import RegexBuilder
 
 @testable import SwiftString
@@ -38,14 +39,23 @@ final class StringTests: XCTestCaseSnapshot {
     // Should
         Not
             move
-
+    
     // Ok
+    
+    """
+    
+    assertInlineSnapshot(of: sut.indentNonEmpty(.spaces(2, tabs: 3)), as: .lines) {
+    """
+          // Should
+              Not
+                  move
+    
+          // Ok
 
     """
-
-    assertSnapshot(matching: sut.indentNonEmpty(.spaces(2, tabs: 3)), as: .lines)
+    }
   }
-
+  
   func testCamelcase() {
     let expected = "whatDoesItDo"
     XCTAssertEqual("what.does.it.do".camelCase(), expected)
@@ -61,40 +71,36 @@ final class StringTests: XCTestCaseSnapshot {
     
     XCTAssertEqual(sut.camelCase(), "semanticForegroundOnBrandStaticDefaultFill")
   }
-
+  
   func testSnakeCase() {
     XCTAssertEqual("WhatDoesItDo".split(to: .kebab), "what-does-it-do" )
     XCTAssertEqual("whatDoesItDo".split(to: .kebab), "what-does-it-do" )
-
+    
     XCTAssertEqual("whatDoesItDo".split(to: .kebab), "what-does-it-do" )
-    XCTAssertEqual("whatDoesItDo".camelCase(to: .snake), "what_does_it_do" )
+    XCTAssertEqual("whatDoesItDo".split(to: .snake), "what_does_it_do" )
     XCTAssertEqual("whatDoes-690_ItDo".split(to: .snake), "what_does_690_it_do" )
-    XCTAssertEqual("gradient.neutral.100-bottom-to-50%".camelCase(to: .snake), "gradient_neutral_100_bottom_to_50" )
+    XCTAssertEqual("gradient.neutral.100-bottom-to-50%".split(to: .snake), "gradient_neutral_100_bottom_to_50" )
     XCTAssertEqual("whatDoesItDo".split(to: .dots), "what.does.it.do" )
-    XCTAssertEqual("plus26Logo".camelCase(to: .dots), "plus.26.logo" )
+    XCTAssertEqual("plus26Logo".split(to: .dots), "plus.26.logo" )
+    XCTAssertEqual("whatDoes-690_ItDo".split(to: .camelCase), "whatDoes690itDo" )
   }
-
+  
+  func testCamelCase_noUpperCaseAfterNumber() {
+    XCTAssertEqual("whatDoes-690_ItDo".camelCase(), "whatDoes690itDo")
+  }
+  
   func testCapitalizeFirstLetter() {
     var sut = "whatDoesItDo"
     sut.capitalizeFirstLetter()
     XCTAssertEqual(sut, "WhatDoesItDo" )
   }
-
+  
   func testCapitalizingFirstLetter (){
     XCTAssertEqual("whatDoesItDo".capitalizingFirstLetter(), "WhatDoesItDo")
   }
-
+  
   func testLowercasedFirstCharacter(){
     XCTAssertEqual("whatDoesItDo".lowercasedFirstCharacter(), "whatDoesItDo")
   }
-
-}
-
-open class XCTestCaseSnapshot: XCTestCase {
-  open override class func setUp() {
-    super.setUp()
-    SnapshotTesting.diffTool = "ksdiff"
-    let isRecording = Bool(ProcessInfo.processInfo.environment["be.dooz.update.tests"] ?? "false") ?? false
-    SnapshotTesting.isRecording = isRecording
-  }
+  
 }

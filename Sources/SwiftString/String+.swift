@@ -157,7 +157,11 @@ extension String {
     return words
       .dropFirst()
       .reduce(start) { partialResult, word in
-        "\(partialResult)\(word.capitalizingFirstLetter())"
+        if let last = partialResult.last, last.isNumber {
+          return "\(partialResult)\(word.lowercasedFirstCharacter())"
+        } else {
+          return "\(partialResult)\(word.capitalizingFirstLetter())"
+        }
       }
   }
 }
