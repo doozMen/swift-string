@@ -71,7 +71,31 @@ extension String {
     }
   }
   
+  public func splitWithoutCamelCase() -> [String]? {
+    Transform.allCases.compactMap {
+      let components = components(separatedBy: $0.rawValue)
+      guard components.count > 1 else {
+        return nil
+      }
+      return components
+    }.first
+  }
+  
   public func wordsInCamelCaseOrOneOfTheTransformSeparators() -> [String] {
+    let subject: String
+    if self.uppercased() == self {
+      subject = self.lowercased()
+    } else if let components = self.splitWithoutCamelCase() {
+      subject = components.reduce("", { partialResult, next in
+        if next.uppercased() == next {
+          return "\(partialResult)\(Transform.dots.rawValue)\(next.lowercased())"
+        } else {
+          return "\(partialResult)\(Transform.dots.rawValue)\(next)"
+        }
+      })
+    } else {
+      subject = self
+    }
     if #available(iOS 16, *) {
       // Implementation using RegexBuilder
       let separator = Regex {
@@ -94,7 +118,7 @@ extension String {
           }
         }
       }
-      return self.matches(of: wordsRegex)
+      return subject.matches(of: wordsRegex)
         .map { match in
           match.description
             .replacingOccurrences(of: Transform.kebab.rawValue, with: "")
@@ -107,9 +131,9 @@ extension String {
       let pattern = "[A-Z]?[a-z]+|[A-Z]+(?![a-z])|\\d+|[-_.]"
       do {
         let regex = try NSRegularExpression(pattern: pattern)
-        let results = regex.matches(in: self, range: NSRange(self.startIndex..., in: self))
+        let results = regex.matches(in: subject, range: NSRange(subject.startIndex..., in: subject))
         return results.map {
-          String(self[Range($0.range, in: self)!])
+          String(subject[Range($0.range, in: subject)!])
         }
         .flatMap { $0.splitWordsDigits() }
         .filter { !$0.isEmpty }
@@ -151,16 +175,17 @@ extension String {
   
   public func camelCase() -> String {
     let words = wordsInCamelCaseOrOneOfTheTransformSeparators()
-    guard let start = words.first?.lowercasedFirstCharacter() else {
+    guard let start = words.first?.lowercased() else {
       return ""
     }
     return words
       .dropFirst()
       .reduce(start) { partialResult, word in
+        let lowerCased = word.lowercased()
         if let last = partialResult.last, last.isNumber {
-          return "\(partialResult)\(word.lowercasedFirstCharacter())"
+          return "\(partialResult)\(lowerCased.lowercasedFirstCharacter())"
         } else {
-          return "\(partialResult)\(word.capitalizingFirstLetter())"
+          return "\(partialResult)\(lowerCased.capitalizingFirstLetter())"
         }
       }
   }
