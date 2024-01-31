@@ -182,11 +182,7 @@ extension String {
       .dropFirst()
       .reduce(start) { partialResult, word in
         let lowerCased = word.lowercased()
-        if let last = partialResult.last, last.isNumber {
-          return "\(partialResult)\(lowerCased.lowercasedFirstCharacter())"
-        } else {
-          return "\(partialResult)\(lowerCased.capitalizingFirstLetter())"
-        }
+        return "\(partialResult)\(lowerCased.capitalizingFirstLetter())"
       }
   }
 }

@@ -68,11 +68,12 @@ final class StringTests: XCTestCaseSnapshot {
   
   func testCamelcase() {
     let expected = "whatDoesItDo"
-//    XCTAssertEqual("what.does.it.do".camelCase(), expected)
-//    XCTAssertEqual("what-does-it-do".camelCase(), expected)
-//    XCTAssertEqual("what_does_it_do".camelCase(), expected)
-//    XCTAssertEqual("what Does it do".camelCase(), expected)
+    XCTAssertEqual("what.does.it.do".camelCase(), expected)
+    XCTAssertEqual("what-does-it-do".camelCase(), expected)
+    XCTAssertEqual("what_does_it_do".camelCase(), expected)
+    XCTAssertEqual("what Does it do".camelCase(), expected)
     XCTAssertEqual("WHAT_DOES_IT_DO".camelCase(), expected)
+    XCTAssertEqual("gradient.neutral.100-bottom-to-50%".camelCase(), "gradientNeutral100BottomTo50" )
     XCTAssertEqual(expected.camelCase(), expected)
   }
   
@@ -93,11 +94,11 @@ final class StringTests: XCTestCaseSnapshot {
     XCTAssertEqual("gradient.neutral.100-bottom-to-50%".split(to: .snake), "gradient_neutral_100_bottom_to_50" )
     XCTAssertEqual("whatDoesItDo".split(to: .dots), "what.does.it.do" )
     XCTAssertEqual("plus26Logo".split(to: .dots), "plus.26.logo" )
-    XCTAssertEqual("whatDoes-690_ItDo".split(to: .camelCase), "whatDoes690itDo" )
+    XCTAssertEqual("whatDoes-690_ItDo".split(to: .camelCase), "whatDoes690ItDo" )
   }
   
   func testCamelCase_noUpperCaseAfterNumber() {
-    XCTAssertEqual("whatDoes-690_ItDo".camelCase(), "whatDoes690itDo")
+    XCTAssertEqual("whatDoes-690_ItDo".camelCase(), "whatDoes690ItDo")
   }
   
   func testCapitalizeFirstLetter() {
