@@ -72,13 +72,16 @@ extension String {
   }
   
   public func splitWithoutCamelCase() -> [String]? {
-    Transform.allCases.compactMap {
-      let components = components(separatedBy: $0.rawValue)
-      guard components.count > 1 else {
-        return nil
+    let result: [[String]] = Transform
+      .allCases
+      .compactMap {
+        let components: [String] = components(separatedBy: $0.rawValue)
+        guard components.count > 1 else {
+          return nil
+        }
+        return components
       }
-      return components
-    }.first
+    return result.first
   }
   
   public func wordsInCamelCaseOrOneOfTheTransformSeparators() -> [String] {

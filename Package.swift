@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -17,7 +17,8 @@ let package = Package(
     targets: [
         .target(
             name: "SwiftString",
-            dependencies: []),
+            dependencies: []
+        ),
         .testTarget(
             name: "SwiftStringTests",
             dependencies: [
@@ -25,5 +26,6 @@ let package = Package(
               .product(name: "SnapshotTestingCli", package: "swift-snapshot-testing-cli")
             ]
         ),
-    ]
+    ],
+    swiftLanguageVersions: [.version("6"), .v5]
 )
